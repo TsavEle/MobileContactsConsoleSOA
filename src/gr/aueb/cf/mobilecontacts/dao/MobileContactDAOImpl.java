@@ -12,9 +12,11 @@ public class MobileContactDAOImpl implements IMobileContactDAO {
 
     private static final List<MobileContact> contacts = new ArrayList<MobileContact>(); // Constructor που δημιουργεί μία κλάση
     // που μέσα της έχει έναν πίνακα, το Array List
+    private static  Long id = 1L;
 
     @Override
     public MobileContact insert(MobileContact mobileContact) {
+        mobileContact.setId(id++) ;
         contacts.add(mobileContact);
         return mobileContact;
     }
@@ -27,37 +29,44 @@ public class MobileContactDAOImpl implements IMobileContactDAO {
 
     @Override
     public void deleteById(Long id) {
+       // contacts.remove(getIndexById(id));
+        contacts.removeIf(contact -> contact.getId().equals(id));
 
     }
 
     @Override
     public MobileContact getById(Long id) {
-        return null;
+        int positionToReturn = getIndexById(id);
+        return (positionToReturn != -1) ? contacts.get(positionToReturn) : null;
+
     }
 
     @Override
     public List<MobileContact> getAll() {
-        return List.of();
+        // Επιστρέφω καινούργιο Array list για immutability
+        return new ArrayList<>(contacts);
     }
 
     @Override
     public void deleteByPhoneNumber(String phoneNumber) {
+        contacts.removeIf(contact -> contact.getPhoneNumber().equals(phoneNumber));
 
     }
 
     @Override
     public MobileContact getByPhoneNumber(String phoneNumber) {
-        return null;
+        int positionToReturn = getIndexByPhoneNumber(phoneNumber);
+        return (positionToReturn != -1) ? contacts.get(positionToReturn) : null;
     }
 
     @Override
     public boolean userIdExists(Long id) {
-        return false;
+        return getIndexById(id) != -1;
     }
 
     @Override
     public boolean phoneNumberExists(String phoneNumber) {
-        return false;
+        return getIndexByPhoneNumber(phoneNumber) != -1;
     }
 
     private int getIndexById(Long id) {
@@ -71,6 +80,17 @@ public class MobileContactDAOImpl implements IMobileContactDAO {
             // Αν υπάρχει id κάπου στη λίστα που ισούται με το id που δίνει ο χρήστης
             // τότε το id που δίνει ο χρήστης χρησιμοποιείται
             // Επιστρέφω τη θέση στη λίστα που υπάρχει το id που δίνει ο χρήστης
+
+            if (contacts.get(i).getId().equals(id)) {
+                positionToReturn = i;
+                break;
+            }
+        } return positionToReturn;
+    }
+
+    private int getIndexByPhoneNumber(String phoneNumber) {
+        int positionToReturn = -1;
+        for (int i = 0; i < contacts.size(); i++) {
 
             if (contacts.get(i).getId().equals(id)) {
                 positionToReturn = i;
