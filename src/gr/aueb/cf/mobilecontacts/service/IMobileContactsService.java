@@ -13,8 +13,17 @@ public interface IMobileContactsService {
     MobileContact insertMobileContact(MobileContactsInsertDTO dto)
             throws PhoneNumberAlreadyExistsException;
     MobileContact updateMobileContact(MobileContactsUpdateDTO dto)
-            throws PhoneNumberAlreadyExistsException, ContactNotFoundException;
-    void deleteMobileContactById(Long id) throws ContactNotFoundException;
-    MobileContact getMobileContactById(Long id) throws ContactNotFoundException;
+            throws PhoneNumberAlreadyExistsException,
+            ContactNotFoundException;
+    void deleteMobileContactById(Long id)
+            throws ContactNotFoundException;
+    MobileContact getMobileContactById(Long id)
+            throws ContactNotFoundException;
     List<MobileContact> getAllContacts();
+
+    MobileContact getContactByPhoneNumber (String phoneNumber)
+            throws ContactNotFoundException;
+    void deleteByPhoneNumber(String phoneNumber)
+        throws ContactNotFoundException;
 }
+
