@@ -14,6 +14,9 @@ import gr.aueb.cf.mobilecontacts.service.IMobileContactsService;
 import gr.aueb.cf.mobilecontacts.service.MobileContactsServiceImpl;
 import gr.aueb.cf.mobilecontacts.validation.ValidationUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MobileContactController {
 
     private final IMobileContactDAO dao = new MobileContactDAOImpl();
@@ -85,6 +88,48 @@ public class MobileContactController {
             mobileContact = service.getMobileContactById(id);
             readOnlyDTO = Mapper.mapMobileContactToDTO(mobileContact);
             return "OK\n" + Serializer.serializeDTO(readOnlyDTO);
+        } catch (ContactNotFoundException e) {
+            return "Error.\n Contact not found.\n";
+        }
+    }
+
+    public List<String> getAllContacts() {
+        List<MobileContact> contacts;
+        List<String> serializedList = new ArrayList<>();
+        MobileContactsReadOnlyDTO readOnlyDTO;
+        String serialized;
+
+        contacts = service.getAllContacts();
+        for (MobileContact contact : contacts) {
+            readOnlyDTO = Mapper.mapMobileContactToDTO(contact);
+            serialized = Serializer.serializeDTO(readOnlyDTO);
+            serializedList.add(serialized);
+        }
+
+        return serializedList;
+    }
+
+    public String getContactByPhoneNumber(String phoneNumber) {
+        MobileContact mobileContact;
+        MobileContactsReadOnlyDTO readOnlyDTO;
+        try {
+            mobileContact = service.getContactByPhoneNumber(phoneNumber);
+            readOnlyDTO = Mapper.mapMobileContactToDTO(mobileContact);
+            return "OK\n" + Serializer.serializeDTO(readOnlyDTO);
+        } catch (ContactNotFoundException e) {
+            return "Error.\n Contact not found.\n";
+        }
+    }
+
+    public String deleteContactByPhoneNumber(String phoneNumber) {
+        MobileContact mobileContact;
+        MobileContactsReadOnlyDTO readOnlyDTO;
+        try {
+            mobileContact = service.getContactByPhoneNumber(phoneNumber);
+            readOnlyDTO = Mapper.mapMobileContactToDTO(mobileContact);
+            service.deleteByPhoneNumber(phoneNumber);
+
+            return "OK.\n Contacted deleted successfully\n" + Serializer.serializeDTO(readOnlyDTO);
         } catch (ContactNotFoundException e) {
             return "Error.\n Contact not found.\n";
         }
