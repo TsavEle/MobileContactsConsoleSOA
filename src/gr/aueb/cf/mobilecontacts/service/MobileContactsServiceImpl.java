@@ -5,6 +5,7 @@ import gr.aueb.cf.mobilecontacts.dto.MobileContactsInsertDTO;
 import gr.aueb.cf.mobilecontacts.dto.MobileContactsUpdateDTO;
 import gr.aueb.cf.mobilecontacts.exceptions.ContactNotFoundException;
 import gr.aueb.cf.mobilecontacts.exceptions.PhoneNumberAlreadyExistsException;
+import gr.aueb.cf.mobilecontacts.mapper.Mapper;
 import gr.aueb.cf.mobilecontacts.model.MobileContact;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class MobileContactsServiceImpl implements IMobileContactsService {
                 throw new
                         PhoneNumberAlreadyExistsException("Contact with phone number " + dto.getPhoneNumber() + " already exists");
             }
-            mobileContact = mapInsertDTOToContact(dto);
+            mobileContact = Mapper.mapInsertDTOToContact(dto);
 
             System.err.printf("MobileContactsServiceImpl Logger: %s was inserted\n", mobileContact);
             return dao.insert(mobileContact);
@@ -57,7 +58,7 @@ public class MobileContactsServiceImpl implements IMobileContactsService {
                 throw new PhoneNumberAlreadyExistsException("Phone number " + dto.getPhoneNumber() + " already exists but cannot be updated");
             }
 
-            newContact = mapUpdateDTOToContact(dto);
+            newContact = Mapper.mapUpdateDTOToContact(dto);
             System.err.printf("MobileContactServiceImpl Logger: %s was updated to %s \n",mobileContact, newContact );
             return dao.update(dto.getId(), newContact);
 
@@ -136,11 +137,5 @@ public class MobileContactsServiceImpl implements IMobileContactsService {
 
     }
 
-    private MobileContact mapInsertDTOToContact(MobileContactsInsertDTO dto) {
-        return new MobileContact(null, dto.getFirstname(), dto.getLastname(), dto.getPhoneNumber());
-    }
 
-    private MobileContact mapUpdateDTOToContact(MobileContactsUpdateDTO dto) {
-        return new MobileContact(dto.getId(), dto.getFirstname(), dto.getLastname(), dto.getPhoneNumber());
-    }
 }
